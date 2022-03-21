@@ -1,0 +1,18 @@
+version: '3.3'
+
+services:
+  database:
+    image: mysql
+    environment:
+      MYSQL_DATABASE: 'snippet-db'
+      MYSQL_USER: 'user'
+      MYSQL_PASSWORD: 'password'
+      MYSQL_ROOT_PASSWORD: 'lordematus'
+    ports:
+      - '3306:3306'
+    expose:
+      - '3306'
+    volumes:
+      - snippet-db:/var/lib/mysql
+volumes:
+  snippet-db:

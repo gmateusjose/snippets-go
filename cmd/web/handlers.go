@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
+	"html/template"
 	"net/http"
 	"strconv"
-	//"text/template"
 
 	"github.com/gmateusjose/snippetbox/pkg/models"
 )
@@ -64,7 +64,27 @@ func (app *application) showSnippet(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Fprintf(w, "%v\n", s)
+	// Create an instance of a templateDate struct holding the snippet data
+	data := &templateData{Snippet: s}
+
+	files := []string{
+		"./ui/html/show.page.tmpl",
+		"./ui/html/base.layout.tmpl",
+		"./ui/html/footer.partial.tmpl",
+	}
+
+	// Parsing template files
+	ts, err := template.ParseFiles(files...)
+	if err != nil {
+		app.serverError(w, err)
+		return
+	}
+
+	err = ts.Execute(w, data)
+	if err != nil {
+		app.serverError(w, err)
+		return
+	}
 }
 
 // createSnippet create a new snippet in system

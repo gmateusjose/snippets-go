@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"html/template"
 	"net/http"
 	"strconv"
 
@@ -22,29 +21,9 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	for _, snippet := range s {
-		fmt.Fprintf(w, "%v\n", snippet)
-	}
-
-	/*
-		files := []string{
-			"./ui/html/home.page.tmpl",
-			"./ui/html/base.layout.tmpl",
-			"./ui/html/footer.partial.tmpl",
-		}
-
-		ts, err := template.ParseFiles(files...)
-		if err != nil {
-			app.serverError(w, err)
-			return
-		}
-
-		err = ts.Execute(w, nil)
-		if err != nil {
-			app.serverError(w, err)
-			return
-		}
-	*/
+	app.render(w, r, "home.page.tmpl", &templateData{
+		Snippets: s,
+	})
 }
 
 // showSnippet returns specific information about a snippet
@@ -64,27 +43,9 @@ func (app *application) showSnippet(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Create an instance of a templateDate struct holding the snippet data
-	data := &templateData{Snippet: s}
-
-	files := []string{
-		"./ui/html/show.page.tmpl",
-		"./ui/html/base.layout.tmpl",
-		"./ui/html/footer.partial.tmpl",
-	}
-
-	// Parsing template files
-	ts, err := template.ParseFiles(files...)
-	if err != nil {
-		app.serverError(w, err)
-		return
-	}
-
-	err = ts.Execute(w, data)
-	if err != nil {
-		app.serverError(w, err)
-		return
-	}
+	app.render(w, r, "show.page.tmpl", &templateData{
+		Snippet: s,
+	})
 }
 
 // createSnippet create a new snippet in system
